@@ -1,7 +1,9 @@
 package com.example.nasaimagesearch;
 
 import com.example.nasaimagesearch.models.*;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 
 import java.io.IOException;
@@ -15,6 +17,12 @@ import java.util.List;
 
 import com.google.gson.Gson;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.VBox;
+import javafx.scene.text.Text;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 
 public class ImageSearchController {
 
@@ -22,6 +30,15 @@ public class ImageSearchController {
     private Label numberOfEntriesLabel;
     @FXML
     private TextField searchText;
+
+    public TableView getTableView() {
+        return tableView;
+    }
+
+    public void setTableView(TableView tableView) {
+        this.tableView = tableView;
+    }
+
     @FXML
     private TableView tableView;
     private static final String URL = "https://images-api.nasa.gov/search?q=";
@@ -50,6 +67,7 @@ public class ImageSearchController {
         imageHrefColumn.setCellValueFactory(new PropertyValueFactory<>("link"));
 
         String query = searchText.getText();
+        tableView.getItems().clear();
         int i = 1;
         //while(true) {
         String link = "https://images-api.nasa.gov/search?q=" + query + "&media_type=image&page=" + i;
@@ -74,16 +92,6 @@ public class ImageSearchController {
         } catch (InterruptedException ex) {
             throw new RuntimeException(ex);
         }
-        tableView.setRowFactory(tv -> {
-            TableRow<ImageSearchModel> row = new TableRow<>();
-            row.setOnMouseClicked(event -> {
-                if(event.getClickCount() == 2 && !row.isEmpty()) {
-                    ImageSearchModel rowData = row.getItem();
-                    System.out.println("Double click on: "+rowData.getLink());
-                }
-            });
-            return row;
-        });
     }
 
     public static List<ImageSearchModel> getResults(String query) throws URISyntaxException, IOException, InterruptedException {
