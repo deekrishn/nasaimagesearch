@@ -1,5 +1,7 @@
 package com.example.nasaimagesearch;
 
+import java.util.List;
+
 public class ImageSearchModel {
     public String getNasaId() {
         return nasaId;
@@ -46,6 +48,16 @@ public class ImageSearchModel {
     private  String description;
     private String dateCreated;
     private String link;
+
+    public List<String> getKeyWords() {
+        return keyWords;
+    }
+
+    public void setKeyWords(List<String> keyWords) {
+        this.keyWords = keyWords;
+    }
+
+    private List<String> keyWords;
 
     ImageSearchModel(String nasaId, String title, String description, String dateCreated, String link) {
         this.nasaId = nasaId;

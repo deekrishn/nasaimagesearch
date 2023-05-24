@@ -70,36 +70,35 @@ public class ImageSearchController {
         tableView.getItems().clear();
         int i = 1;
         //while(true) {
-        String link = "https://images-api.nasa.gov/search?q=" + query + "&media_type=image&page=" + i;
+        String link = "https://images-api.nasa.gov/search?q=" + query + "&media_type=image";
         i++;
         try {
             List<ImageSearchModel> list =  getResults(link);
             //if(list.isEmpty()) break;
             numberOfEntriesLabel.setText("Number of entries: " + list.size());
             tableView.getItems().addAll(list);
-            for(ImageSearchModel image : list) {
-                System.out.println("ID is " + image.getNasaId());
-                System.out.println("Title is " + image.getTitle());
-                System.out.println("Description is " + image.getDescription());
-                System.out.println("Date Created is " + image.getDateCreated());
-                System.out.println("Link is " + image.getLink());
-                //tableView.getItems().add(image);
-            }
         } catch (URISyntaxException ex) {
             throw new RuntimeException(ex);
         } catch (IOException ex) {
             throw new RuntimeException(ex);
         } catch (InterruptedException ex) {
             throw new RuntimeException(ex);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
     }
 
-    public static List<ImageSearchModel> getResults(String query) throws URISyntaxException, IOException, InterruptedException {
-        System.out.println("Inside getResults");
+    public static List<ImageSearchModel> getResults(String query) throws Exception {
         List<ImageSearchModel> list = new ArrayList<>();
-        HttpRequest getRequest = HttpRequest.newBuilder()
-                .uri(new URI(query))
-                .GET().build();
+        HttpRequest getRequest;
+        try {
+            getRequest = HttpRequest.newBuilder()
+                    .uri(new URI(query))
+                    .GET().build();
+        } catch (URISyntaxException ex) {
+            ex.printStackTrace();
+            throw new Exception("Query was bad and hit an exception " + query);
+        }
 
         HttpClient httpClient = HttpClient.newHttpClient();
 
