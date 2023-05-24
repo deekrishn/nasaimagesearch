@@ -74,6 +74,7 @@ OR
 ## Usage
 
 Attaching a video that would demonstrate how the UI looks like.
+https://capture.dropbox.com/yQFRFUg5mvKECIYO
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
