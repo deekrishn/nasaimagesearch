@@ -2,10 +2,7 @@ package com.example.nasaimagesearch;
 
 import com.example.nasaimagesearch.models.*;
 import javafx.fxml.FXML;
-import javafx.scene.control.Label;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 
 import java.io.IOException;
 import java.net.URI;
@@ -30,29 +27,37 @@ public class ImageSearchController {
     private static final String URL = "https://images-api.nasa.gov/search?q=";
 
     @FXML
-    protected void onGoButtonClick() {
-        String s = searchText.getText();
-        String query = URL + s + "&media_type=image";
+    private TableColumn nasaIdColumn;
+    @FXML
+    private TableColumn titleColumn;
+    @FXML
+    private TableColumn descriptionColumn;
+    @FXML
+    private TableColumn dateCreatedColumn;
+    @FXML
+    private TableColumn imageHrefColumn;
 
-        TableColumn nasaIdColumn = new TableColumn("NasaID");
+    @FXML
+    protected void onGoButtonClick() {
         nasaIdColumn.setCellValueFactory(new PropertyValueFactory<>("nasaId"));
 
-        TableColumn titleColumn = new TableColumn("Title");
         titleColumn.setCellValueFactory(new PropertyValueFactory<>("title"));
 
-        TableColumn descriptionColumn = new TableColumn("Description");
         descriptionColumn.setCellValueFactory(new PropertyValueFactory<>("description"));
 
-        TableColumn dateCreatedColumn = new TableColumn("Date Created");
         dateCreatedColumn.setCellValueFactory(new PropertyValueFactory<>("dateCreated"));
 
-        TableColumn imageHrefColumn = new TableColumn("Link");
         imageHrefColumn.setCellValueFactory(new PropertyValueFactory<>("link"));
 
-        tableView.getColumns().addAll(nasaIdColumn, titleColumn, descriptionColumn, dateCreatedColumn, imageHrefColumn);
+        String query = searchText.getText();
+        int i = 1;
+        //while(true) {
+        String link = "https://images-api.nasa.gov/search?q=" + query + "&media_type=image&page=" + i;
+        i++;
         try {
-            List<ImageSearchModel> list =  getResults(query);
-            numberOfEntriesLabel.setText(Integer.toString(list.size()));
+            List<ImageSearchModel> list =  getResults(link);
+            //if(list.isEmpty()) break;
+            numberOfEntriesLabel.setText("Number of entries: " + list.size());
             tableView.getItems().addAll(list);
             for(ImageSearchModel image : list) {
                 System.out.println("ID is " + image.getNasaId());
@@ -69,6 +74,16 @@ public class ImageSearchController {
         } catch (InterruptedException ex) {
             throw new RuntimeException(ex);
         }
+        tableView.setRowFactory(tv -> {
+            TableRow<ImageSearchModel> row = new TableRow<>();
+            row.setOnMouseClicked(event -> {
+                if(event.getClickCount() == 2 && !row.isEmpty()) {
+                    ImageSearchModel rowData = row.getItem();
+                    System.out.println("Double click on: "+rowData.getLink());
+                }
+            });
+            return row;
+        });
     }
 
     public static List<ImageSearchModel> getResults(String query) throws URISyntaxException, IOException, InterruptedException {
