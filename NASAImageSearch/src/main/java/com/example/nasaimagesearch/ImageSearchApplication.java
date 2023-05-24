@@ -24,22 +24,29 @@ public class ImageSearchApplication extends Application {
         stage.setScene(scene);
         stage.show();
 
-        ImageSearchController imageSearchController = (ImageSearchController) fxmlLoader.getController();
+        ImageSearchController imageSearchController = fxmlLoader.getController();
         TableView tableView = imageSearchController.getTableView();
 
         tableView.setRowFactory(tv -> {
             TableRow<ImageSearchModel> row = new TableRow<>();
-            row.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            row.setOnMouseClicked(new EventHandler<>() {
                 @Override
                 public void handle(MouseEvent mouseEvent) {
-                    if(mouseEvent.getClickCount() == 2 && !row.isEmpty()) {
+                    if (mouseEvent.getClickCount() == 2 && !row.isEmpty()) {
                         ImageSearchModel rowData = row.getItem();
-                        System.out.println("Double click on: "+rowData.getLink());
+                        String link = rowData.getLink();
+                        String title = rowData.getTitle();
+                        String description = rowData.getDescription();
+                        String dateCreated = rowData.getDateCreated();
+                        System.out.println("Double click on: " + rowData.getLink());
                         final Stage dialog = new Stage();
                         dialog.initModality(Modality.APPLICATION_MODAL);
                         dialog.initOwner(stage);
                         VBox dialogBox = new VBox(200);
-                        dialogBox.getChildren().add(new Text("Dialog"));
+                        dialogBox.getChildren().add(new Text("Link is" + link));
+                        dialogBox.getChildren().add(new Text("Title is" + title));
+                        dialogBox.getChildren().add(new Text("Description is" + description));
+                        dialogBox.getChildren().add(new Text("Date Created is" + dateCreated));
                         Scene dialogScene = new Scene(dialogBox);
                         dialog.setScene(dialogScene);
                         dialog.show();
